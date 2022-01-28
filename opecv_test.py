@@ -73,12 +73,13 @@ if __name__ == "__main__":
 
 
 	face_db = [
-    "dataset/img1.jpg",
-    "dataset/img3.jpg",
-    "dataset/img8.jpg",
-    "dataset/img13.jpg",
-    "dataset/img30.jpg",
-    "dataset/img44.jpg"
+    "dataset/img1.jpg", # AJ
+    "dataset/img3.jpg",	# Jennifer Aniston
+    "dataset/img8.jpg", # SJ
+    "dataset/img14.jpg", # MZ
+    "dataset/img17.jpg",	 # Jack Dorsey
+    "dataset/img30.jpg", # Matt Damon
+    "dataset/img44.jpg" # Katy Perry
 	]
 	faces = []
 	for img_path in face_db:
@@ -93,14 +94,15 @@ if __name__ == "__main__":
 	#############################################################################################
 
 	# Model Training ####################################
-	model = cv2.face.EigenFaceRecognizer_create()
-	# model = cv2.face.LBPHFaceRecognizer_create() #Local Binary Patterns Histograms
+	# model = cv2.face.EigenFaceRecognizer_create()
+	model = cv2.face.LBPHFaceRecognizer_create() #Local Binary Patterns Histograms
 	model.train(faces, ids)
 	model.save("model.yml")
 	#####################################################
 
 
-	findFace("dataset/img7.jpg")
+	findFace("dataset/img59.jpg")
+
 
 
 
