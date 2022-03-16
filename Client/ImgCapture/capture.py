@@ -7,7 +7,19 @@ import json
 import requests
 
 
-
+def send_image(img, num):
+    _, encrimg = cv2.imencode(".jpg", img)
+    img_str = encrimg.tostring()
+    img_byte = base64.b64encode(img_str).decode("utf-8")
+    img_json = json.dumps({'image':img_byte, "request_num" : str(num)}).encode("utf-8")
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    # payload = json.dumps({"image": im_b64, "request_num" : request_num})
+    response = requests.post(api, data=img_json, headers=headers)
+    try:
+        data = response.json()
+        print(data)
+    except requests.exceptions.RequestException:
+        print(response.text)
 
 if __name__ == "__main__":
     api = "http://127.0.0.1:5000"
@@ -82,18 +94,8 @@ if __name__ == "__main__":
                 for detected_face in detected_faces_final:
                         x = detected_face[0]; y = detected_face[1]
                         w = detected_face[2]; h = detected_face[3]
-
-                im_b64 = base64.b64encode(freeze_img).decode("utf8")
-                headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-                payload = json.dumps({"image": im_b64, "request_num" : request_num})
-                response = requests.post(api, data=payload, headers=headers)
+                send_image(freeze_img, request_num)
                 request_num = request_num + 1
-                try:
-                    data = response.json()
-                    print(data)
-                except requests.exceptions.RequestException:
-                    print(response.text)
-                # cv2.imwrite('image.jpg', freeze_img)
                 face_detected = False
                 face_included_frames = 0
                 freeze = False
