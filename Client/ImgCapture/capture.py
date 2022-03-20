@@ -5,13 +5,40 @@ from deepface.detectors import FaceDetector
 import base64
 import json
 import requests
+from tkinter import *
+from tkinter import ttk
 
 
-def send_image(img, num):
+class Form:
+    def __init__(self):
+        root = Tk()
+        root.title("ID form")
+        self.mainframe = ttk.Frame(root, padding='3 3 12 12')
+        self.mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
+        root.columnconfigure(0, weight=1)
+        root.rowconfigure(0, weight=1)
+
+        ttk.Label(self.mainframe, text="Student ID").grid(column=1, row=1, sticky=W)
+
+        self.studentid_field = StringVar()
+        studentid_entry = ttk.Entry(self.mainframe, width=8, textvariable=self.studentid_field)
+        studentid_entry.grid(column=2, row=1, sticky=E)
+        ttk.Button(self.mainframe, text="Save", command=self.submit_form).grid(column=2, row=3, sticky=S)
+        ttk.Button(self.mainframe, text='Next', command=root.destroy).grid(column=3, row=3, sticky=S)
+        root.bind('<Return>', self.submit_form)
+        studentid_entry.focus()
+        root.mainloop()
+
+    def submit_form(self, *args):
+        ttk.Label(self.mainframe, text="Saved, press 'NEXT'!").grid(column=1, row=2, sticky=N)
+        self.student_id = self.studentid_field.get()
+
+    
+def send_image(student_id, img, num):
     _, encrimg = cv2.imencode(".jpg", img)
     img_str = encrimg.tostring()
     img_byte = base64.b64encode(img_str).decode("utf-8")
-    img_json = json.dumps({'image':img_byte, "request_num" : str(num)}).encode("utf-8")
+    img_json = json.dumps({'studentid': student_id, 'image':img_byte, "request_num" : str(num)}).encode("utf-8")
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
     # payload = json.dumps({"image": im_b64, "request_num" : request_num})
     response = requests.post(api, data=img_json, headers=headers)
@@ -23,6 +50,10 @@ def send_image(img, num):
 
 if __name__ == "__main__":
     api = "http://127.0.0.1:5000"
+    
+    form = Form()
+    student_id = form.student_id
+    print("Student id: " + student_id)
     cam = cv2.VideoCapture(0)
     cv2.namedWindow("Image Capture")
     face_detector = FaceDetector.build_model('ssd')
@@ -94,7 +125,7 @@ if __name__ == "__main__":
                 for detected_face in detected_faces_final:
                         x = detected_face[0]; y = detected_face[1]
                         w = detected_face[2]; h = detected_face[3]
-                send_image(freeze_img, request_num)
+                send_image(student_id=student_id, img=freeze_img, num=request_num)
                 request_num = request_num + 1
                 face_detected = False
                 face_included_frames = 0

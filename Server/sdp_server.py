@@ -2,8 +2,6 @@ import json
 from flask import Flask
 from flask import request
 import base64
-import io
-from PIL import Image
 import numpy as np
 import cv2
 
