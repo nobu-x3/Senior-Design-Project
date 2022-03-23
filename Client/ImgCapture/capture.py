@@ -125,7 +125,8 @@ if __name__ == "__main__":
                 for detected_face in detected_faces_final:
                         x = detected_face[0]; y = detected_face[1]
                         w = detected_face[2]; h = detected_face[3]
-                send_image(student_id=student_id, img=freeze_img, num=request_num)
+                
+                send_image(student_id=student_id, img=base_img, num=request_num)
                 request_num = request_num + 1
                 face_detected = False
                 face_included_frames = 0
