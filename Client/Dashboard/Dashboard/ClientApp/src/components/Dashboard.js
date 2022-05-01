@@ -13,7 +13,7 @@ const Dashboard = (props) =>
             console.log(res);
             setState(res.data);
         });
-    }}, []);
+    }}, [state]);
     
     return(
         <div>
@@ -23,6 +23,13 @@ const Dashboard = (props) =>
     )
 }
 
+const handleDelete = (id) =>
+{
+    axios.delete('https://localhost:7113/api/Dashboard/' + id)
+        .then(res => {
+          alert('Deleted id: ' + id);  
+        });
+}
 function RenderTable(props)
 {
     let test = 
@@ -38,6 +45,9 @@ function RenderTable(props)
     let rows = [];
     props.state.forEach(student => rows.push(
     <tr>
+        <td>
+            <Button variant='danger' onClick={() => handleDelete(student.id)}>Delete</Button>
+        </td>
         <td>{student.id}</td>
         <td>{student.firstName}</td>
         <td>{student.lastName}</td>
@@ -50,6 +60,7 @@ function RenderTable(props)
             <Table striped bordered hover>
                 <thead>
                 <tr>
+                    <th>Delete</th>
                     <th>#</th>
                     <th>First Name</th>
                     <th>Last Name</th>
