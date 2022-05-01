@@ -7,6 +7,7 @@ import { Counter } from './components/Counter';
 
 import './custom.css'
 import Dashboard from './components/Dashboard';
+import AddStudent from "./components/AddStudent";
 
 export default class App extends Component {
   static displayName = App.name;
@@ -18,6 +19,7 @@ export default class App extends Component {
         <Route path='/counter' component={Counter} />
         <Route path='/fetch-data' component={FetchData} />
         <Route path="/dashboard" component={Dashboard} />
+        <Route path='/add-student' component={AddStudent} />
       </Layout>
     );
   }

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Button, Dropdown, SplitButton, Table } from 'react-bootstrap';
 import axios from 'axios';
 const Dashboard = (props) =>
 {
     const [state, setState] = useState([]);
+    const history = useHistory();
     useEffect(() =>
     {{
         axios.get('https://localhost:7113/api/Dashboard').then(res =>
@@ -11,10 +13,11 @@ const Dashboard = (props) =>
             console.log(res);
             setState(res.data);
         });
-    }}, [state]);
+    }}, []);
     
     return(
         <div>
+            <Button variant='primary' onClick={()=>history.push('/add-student')}>Add Student</Button>
             <RenderTable state={state}/>
         </div>
     )
@@ -22,7 +25,8 @@ const Dashboard = (props) =>
 
 function RenderTable(props)
 {
-    let test = [
+    let test = 
+    [
         {
             "id": 1,
             "studentID": "302155",
@@ -32,12 +36,13 @@ function RenderTable(props)
     ]
 
     let rows = [];
-    props.state.forEach(student => rows.push(<tr>
+    props.state.forEach(student => rows.push(
+    <tr>
         <td>{student.id}</td>
         <td>{student.firstName}</td>
         <td>{student.lastName}</td>
         <td>{student.studentID}</td>
-        </tr>
+    </tr>
         
     ))
     return(

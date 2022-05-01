@@ -15,7 +15,6 @@ namespace Dashboard.Controllers
     public class DashboardController : ControllerBase
     {
         private readonly DashboardContext _context;
-        
 
         public DashboardController(DashboardContext context)
         {
