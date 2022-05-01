@@ -24,9 +24,9 @@ namespace Dashboard.Controllers
 
         // GET: api/Dashboard
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
+        public JsonResult GetStudents()
         {
-            return await _context.Students.ToListAsync();
+            return new JsonResult(_context.Students.ToList());
         }
 
         // GET: api/Dashboard/5
