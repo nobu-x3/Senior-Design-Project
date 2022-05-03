@@ -31,6 +31,8 @@ def process_and_verify_face():
         cv2.imwrite('{}/{}/{}'.format(curDirAbs, studentid, filename), decimg) # NOTE: maybe we don't need to save this, just pass a base64
         if reqnum != 0 or (reqnum == 0 and not skip_first_frame): # we do not verify the 
             result = verify(studentid=studentid, img=img_path, reqnum=reqnum)
+            print(result)
+        handle_files(studentid)
         return result
     return "<p>Hello World GET!</p>"
 
@@ -42,6 +44,19 @@ def verify(studentid:str, img, reqnum:int):
     if(isDir):
         result = DeepFace.verify(img1_path=img, img2_path = "{}/{}/base.jpg".format(curDirAbs, studentid), distance_metric = metrics[2], detector_backend='ssd')
     return result
+
+def handle_files(studentid:str):
+    dir = '{}/{}'.format(curDirAbs, studentid)
+    isDir = os.path.isdir(dir)
+    if(not isDir):
+        return
+    
+    for root, dirs, files in os.walk(dir):
+        if len(files) > 10:
+            for file in files:
+                if not file == 'base.jpg':
+                    path = os.path.join(dir, file)
+                    os.remove(path)
 
 def baseFileExists(studentid):
     return os.path.isfile('{}/{}/'.format(curDirAbs, studentid) + 'base.jpg')
