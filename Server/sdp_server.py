@@ -5,6 +5,7 @@ import base64
 import numpy as np
 import cv2
 import os
+import requests
 from deepface import DeepFace
 
 app = Flask(__name__)
@@ -32,7 +33,9 @@ def process_and_verify_face():
         if reqnum != 0 or (reqnum == 0 and not skip_first_frame): # we do not verify the 
             result = verify(studentid=studentid, img=img_path, reqnum=reqnum)
             print(result)
+            send_results_to_dashboard(result, studentid)
         handle_files(studentid)
+        
         return result
     return "<p>Hello World GET!</p>"
 
@@ -57,6 +60,13 @@ def handle_files(studentid:str):
                 if not file == 'base.jpg':
                     path = os.path.join(dir, file)
                     os.remove(path)
+
+
+def send_results_to_dashboard(results, studentid):
+    dashboard_api = "https://localhost:7113/api/Dashboard/" + studentid
+    payload = json.dumps({'studentid': studentid, 'result':results['verified']})
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    response = requests.put(dashboard_api, data=payload, headers=headers)
 
 def baseFileExists(studentid):
     return os.path.isfile('{}/{}/'.format(curDirAbs, studentid) + 'base.jpg')
