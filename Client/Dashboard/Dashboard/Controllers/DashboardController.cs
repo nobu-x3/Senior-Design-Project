@@ -44,15 +44,17 @@ namespace Dashboard.Controllers
 
         // PUT: api/Dashboard/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutStudent(int id, Student student)
+        [HttpPut("{studentID}")]
+        public async Task<IActionResult> PutStudent(string studentID, Student _student)
         {
-            if (id != student.ID)
+            var student = _context.Students.FirstOrDefault(student => student.StudentID.Equals(studentID));
+            if (student != null)
             {
-                return BadRequest();
+                _context.Entry(student).State = EntityState.Modified;
+                student.Status = _student.Status;
+                student.LastUpdate = DateTime.Now;
             }
-
-            _context.Entry(student).State = EntityState.Modified;
+            
 
             try
             {
@@ -60,14 +62,7 @@ namespace Dashboard.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!StudentExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
@@ -82,6 +77,30 @@ namespace Dashboard.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetStudent", new { id = student.ID }, student);
+        }
+
+        [HttpPost("server/{student.StudentID}")]
+        public async Task<ActionResult<Student>> Post(Student student)
+        {
+            var _student = _context.Students.FirstOrDefault(student => student.StudentID.Equals(student.StudentID));
+            if (_student != null)
+            {
+                _context.Entry(_student).State = EntityState.Modified;
+                _student.Status = student.Status;
+                _student.LastUpdate = DateTime.Now;
+            }
+
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return NoContent();
         }
 
         // DELETE: api/Dashboard/5

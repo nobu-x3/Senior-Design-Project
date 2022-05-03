@@ -43,18 +43,23 @@ function RenderTable(props)
     ]
 
     let rows = [];
-    props.state.forEach(student => rows.push(
-    <tr>
-        <td>
-            <Button variant='danger' onClick={() => handleDelete(student.id)}>Delete</Button>
-        </td>
-        <td>{student.id}</td>
-        <td>{student.firstName}</td>
-        <td>{student.lastName}</td>
-        <td>{student.studentID}</td>
-    </tr>
+    props.state.forEach(student => {
+        const status = student.status.toString()
+        rows.push(
+            <tr>
+                <td>
+                    <Button variant='danger' onClick={() => handleDelete(student.id)}>Delete</Button>
+                </td>
+                <td>{student.id}</td>
+                <td>{student.firstName}</td>
+                <td>{student.lastName}</td>
+                <td>{student.studentID}</td>
+                <td>{status}</td>
+                <td>{student.lastUpdate}</td>
+            </tr>
         
-    ))
+        )
+    })
     return(
         <div>
             <Table striped bordered hover>

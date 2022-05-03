@@ -63,10 +63,11 @@ def handle_files(studentid:str):
 
 
 def send_results_to_dashboard(results, studentid):
-    dashboard_api = "https://localhost:7113/api/Dashboard/" + studentid
-    payload = json.dumps({'studentid': studentid, 'result':results['verified']})
+    dashboard_api = "https://localhost:7113/api/Dashboard/server/" + studentid
+    payload = json.dumps({'StudentID':studentid, 'Status': results['verified'], 'FirstName':'', 'LastName':''}) #{'studentid': studentid, 'result':results['verified']}
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    response = requests.put(dashboard_api, data=payload, headers=headers)
+    response = requests.post(dashboard_api, data=payload, headers=headers, verify=False)
+    print(response)
 
 def baseFileExists(studentid):
     return os.path.isfile('{}/{}/'.format(curDirAbs, studentid) + 'base.jpg')

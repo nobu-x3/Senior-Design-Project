@@ -47,12 +47,12 @@ const AddStudent = () =>
                                           placeholder='John' />
                         </Form.Group>
                         <Form.Group controlId='LastName'>
-                            <Form.Label>First Name</Form.Label>
+                            <Form.Label>Last Name</Form.Label>
                             <Form.Control type='text' name='LastName' required
                                           placeholder='Doe' />
                         </Form.Group>
                         <Form.Group controlId='StudentID'>
-                            <Form.Label>First Name</Form.Label>
+                            <Form.Label>Student ID</Form.Label>
                             <Form.Control type='text' name='StudentID' required
                                           placeholder='123456' />
                         </Form.Group>
