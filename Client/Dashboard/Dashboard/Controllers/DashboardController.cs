@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using Dashboard;
 
 namespace Dashboard.Controllers
@@ -54,7 +55,7 @@ namespace Dashboard.Controllers
                 student.Status = _student.Status;
                 student.LastUpdate = DateTime.Now;
             }
-            
+
 
             try
             {
@@ -122,6 +123,28 @@ namespace Dashboard.Controllers
         private bool StudentExists(int id)
         {
             return _context.Students.Any(e => e.ID == id);
+        }
+
+        [HttpPost("sessionSave")]
+        public async Task<IActionResult> StartSession()
+        {
+            bool finished = await CompileClientExecutables();
+            return NoContent();
+        }
+        private async Task<bool> CompileClientExecutables()
+        {
+            var psi = new ProcessStartInfo()
+            {
+                FileName = "/bin/bash",
+                Arguments = "-c \" cd ImgCapture; ./compile.sh \"",
+                RedirectStandardOutput = false,
+                UseShellExecute = true,
+                CreateNoWindow = false
+            };
+
+            var process = Process.Start(psi);
+            await process.WaitForExitAsync();
+            return true;
         }
     }
 }

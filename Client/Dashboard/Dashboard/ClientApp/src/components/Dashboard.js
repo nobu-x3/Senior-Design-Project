@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, Dropdown, SplitButton, Table } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 import axios from 'axios';
+
+
+
 const Dashboard = (props) =>
 {
     const [state, setState] = useState([]);
     const history = useHistory();
     useEffect(() =>
-    {{
+    {
         axios.get('https://localhost:7113/api/Dashboard').then(res =>
         {
             console.log(res);
             setState(res.data);
         });
-    }}, [state]);
+    }, [state]);
     
     return(
         <div>
@@ -26,29 +29,40 @@ const Dashboard = (props) =>
 const handleDelete = (id) =>
 {
     axios.delete('https://localhost:7113/api/Dashboard/' + id)
-        .then(res => {
-          alert('Deleted id: ' + id);  
+        .then(res =>
+        {
+            alert('Deleted id: ' + id);  
         });
 }
 function RenderTable(props)
 {
-    let test = 
-    [
-        {
-            "id": 1,
-            "studentID": "302155",
-            "firstName": "Dominik",
-            "lastName": "Kurasbediani"
-        }
-    ]
-
+    const [loading, setLoading] = useState(true);
+    // let test = 
+    // [
+    //     {
+    //         "id": 1,
+    //         "studentID": "302155",
+    //         "firstName": "Dominik",
+    //         "lastName": "Kurasbediani"
+    //     }
+    // ]
+    const handleSave = () =>
+    {
+        alert("Saving has began");
+        setLoading(true);
+        axios.post('https://localhost:7113/api/Dashboard/sessionSave')
+            .then(res =>
+            {
+                setLoading(false);
+            });
+    }
     let rows = [];
     props.state.forEach(student => {
         const status = student.status.toString()
         rows.push(
             <tr>
                 <td>
-                    <Button variant='danger' onClick={() => handleDelete(student.id)}>Delete</Button>
+                    <Button variant='danger' onClick={() => handleDelete(student.id)} disabled={!loading}>Delete</Button>
                 </td>
                 <td>{student.id}</td>
                 <td>{student.firstName}</td>
@@ -62,6 +76,7 @@ function RenderTable(props)
     })
     return(
         <div>
+            <Button variant='primary' onClick={handleSave} disabled={!loading}>Save</Button>
             <Table striped bordered hover>
                 <thead>
                 <tr>
