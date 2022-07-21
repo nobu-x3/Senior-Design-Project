@@ -149,8 +149,11 @@ namespace Dashboard.Controllers
                 {
                     var text = await System.IO.File.ReadAllTextAsync(finalPath);
                     var res = JsonSerializer.Deserialize<List<Student>>(text);
-                    await _context.AddRangeAsync(res);
-                    await _context.SaveChangesAsync();
+                    if (res != null)
+                    {
+                        await _context.AddRangeAsync(res);
+                        await _context.SaveChangesAsync();
+                    }
                 }
                 catch (Exception e)
                 {
