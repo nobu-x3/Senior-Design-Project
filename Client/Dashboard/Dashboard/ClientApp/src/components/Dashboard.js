@@ -22,15 +22,15 @@ const Dashboard = (props) =>
     const handleSave = () =>
     {
         setLoading(true);
-        // axios.post('https://localhost:7113/api/Dashboard/sessionSave')
-        //     .then(res =>
-        //     {
-        //         setLoading(false);
-        //     });
-        setTimeout(() =>
-        {
-            setLoading(false);
-        }, 5000);
+        axios.post('https://localhost:7113/api/Dashboard/sessionSave')
+            .then(res =>
+            {
+                setLoading(false);
+            });
+        // setTimeout(() =>
+        // {
+        //     setLoading(false);
+        // }, 5000);
         
     }
     return(

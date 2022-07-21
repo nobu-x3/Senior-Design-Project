@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Text.Json;
+using System.IO;
 using Dashboard;
 
 namespace Dashboard.Controllers
@@ -128,7 +130,8 @@ namespace Dashboard.Controllers
         [HttpPost("sessionSave")]
         public async Task<IActionResult> StartSession()
         {
-            bool finished = await CompileClientExecutables();
+            SaveStudents();
+            // bool finished = await CompileClientExecutables();
             return NoContent();
         }
         private async Task<bool> CompileClientExecutables()
@@ -145,6 +148,14 @@ namespace Dashboard.Controllers
             var process = Process.Start(psi);
             await process.WaitForExitAsync();
             return true;
+        }
+
+        private async void SaveStudents()
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            string jsonString = JsonSerializer.Serialize(_context.Students, options);
+            string fileName = $"SaveData_{DateTime.Now}";
+            Console.WriteLine(jsonString);
         }
     }
 }
