@@ -12,6 +12,7 @@ using System.IO;
 using System.Net;
 using Dashboard;
 using Microsoft.Net.Http.Headers;
+using System.IO.Compression;
 using NuGet.Protocol;
 
 namespace Dashboard.Controllers
@@ -174,7 +175,17 @@ namespace Dashboard.Controllers
             // bool finished = await CompileClientExecutables();
             return NoContent();
         }
-        private async Task<bool> CompileClientExecutables()
+        
+        [HttpGet("downloadCompiledExecutables")]
+        public async Task<FileContentResult> DownloadCompiledExecutables()
+        {
+            var fileName = "Client.zip";
+            var bytes = await System.IO.File.ReadAllBytesAsync(fileName);
+            return File(bytes, "application/zip", "Client.zip");
+        }
+        
+        [HttpGet("compileExecutables")]
+        public async Task<bool> CompileClientExecutables()
         {
             var psi = new ProcessStartInfo()
             {

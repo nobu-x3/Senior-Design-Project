@@ -4,14 +4,14 @@ import { Button, Table } from 'react-bootstrap';
 import axios from 'axios';
 import LoadingSpinner from './LoadingSpinner';
 import Form from 'react-bootstrap/Form';
-
-
+import Alert from 'react-bootstrap/Alert';
 
 const Dashboard = (props) =>
 {
     const [state, setState] = useState([]);
     const [isLoading, setLoading] = useState(false);
     const [loadSave, setLoadSave] = useState(false);
+    const [showWaitMessage, setShowWaitMessage] = useState(false);
     const [file, setFile] = useState(null);
     const history = useHistory();
     useEffect(() =>
@@ -24,18 +24,26 @@ const Dashboard = (props) =>
     }, [state]);
     const handleSave = () =>
     {
-        setLoading(true);
         window.open('https://localhost:7113/api/Dashboard/sessionSave', '_blank');
-        // axios.get('https://localhost:7113/api/Dashboard/sessionSave')
+    }
+    
+    const handleCompileRequest = () =>
+    {
+        setLoading(true);
+        setShowWaitMessage(true);
+        setTimeout(() => 
+        {
+            setLoading(false);
+            setShowWaitMessage(false);
+            window.open('https://localhost:7113/api/Dashboard/downloadCompiledExecutables', '_blank', 
+                { popup: true });
+        }, 5000);
+        // axios.get('https://localhost:7113/api/Dashboard/compileExecutables')
         //     .then(res =>
         //     {
         //         setLoading(false);
+        //         setShowWaitMessage(false);
         //     });
-        // setTimeout(() =>
-        // {
-        //     setLoading(false);
-        // }, 5000);
-        
     }
     
     const handleSubmitFile = (event) =>
@@ -53,10 +61,18 @@ const Dashboard = (props) =>
     
     return(
         <div>
-            {isLoading ? <LoadingSpinner /> :
+            {isLoading ?
+            <div>
+                {showWaitMessage ? 
+                    <Alert key={'primary'} variant='primary'>This may take up to 2 hours, please do not reload or leave the page, it is not frozen.</Alert>
+                    : null}
+                <LoadingSpinner />
+            </div>    
+                :
                 <div>
                     <Button variant='primary' onClick={() => history.push('/add-student')}>Add Student</Button>
                     <Button variant='primary' onClick={handleSave}>Save</Button>
+                    <Button variant='primary' onClick={handleCompileRequest}>Compile Client Executables</Button>
                     {loadSave ? 
                         <div>
                             <Form.Group controlId="formFile" className="mb-3" onChange={(e) => setFile(e.target.files[0])}>
