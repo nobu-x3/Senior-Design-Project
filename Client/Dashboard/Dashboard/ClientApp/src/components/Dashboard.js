@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Table } from 'react-bootstrap';
 import axios from 'axios';
+import LoadingSpinner from './LoadingSpinner';
 
 
 
 const Dashboard = (props) =>
 {
     const [state, setState] = useState([]);
+    const [isLoading, setLoading] = useState(false);
     const history = useHistory();
     useEffect(() =>
     {
@@ -17,11 +19,31 @@ const Dashboard = (props) =>
             setState(res.data);
         });
     }, [state]);
-    
+    const handleSave = () =>
+    {
+        setLoading(true);
+        // axios.post('https://localhost:7113/api/Dashboard/sessionSave')
+        //     .then(res =>
+        //     {
+        //         setLoading(false);
+        //     });
+        setTimeout(() =>
+        {
+            setLoading(false);
+        }, 5000);
+        
+    }
     return(
         <div>
-            <Button variant='primary' onClick={()=>history.push('/add-student')}>Add Student</Button>
-            <RenderTable state={state}/>
+            {isLoading ? <LoadingSpinner /> :
+                <div>
+                    <Button variant='primary' onClick={() => history.push('/add-student')}>Add Student</Button>
+                    <Button variant='primary' onClick={handleSave}>Save</Button>
+                    <RenderTable state={state}/>
+                </div>
+            
+            }
+
         </div>
     )
 }
@@ -36,7 +58,6 @@ const handleDelete = (id) =>
 }
 function RenderTable(props)
 {
-    const [loading, setLoading] = useState(true);
     // let test = 
     // [
     //     {
@@ -46,23 +67,14 @@ function RenderTable(props)
     //         "lastName": "Kurasbediani"
     //     }
     // ]
-    const handleSave = () =>
-    {
-        alert("Saving has began");
-        setLoading(true);
-        axios.post('https://localhost:7113/api/Dashboard/sessionSave')
-            .then(res =>
-            {
-                setLoading(false);
-            });
-    }
+
     let rows = [];
     props.state.forEach(student => {
         const status = student.status.toString()
         rows.push(
             <tr>
                 <td>
-                    <Button variant='danger' onClick={() => handleDelete(student.id)} disabled={!loading}>Delete</Button>
+                    <Button variant='danger' onClick={() => handleDelete(student.id)}>Delete</Button>
                 </td>
                 <td>{student.id}</td>
                 <td>{student.firstName}</td>
@@ -76,7 +88,6 @@ function RenderTable(props)
     })
     return(
         <div>
-            <Button variant='primary' onClick={handleSave} disabled={!loading}>Save</Button>
             <Table striped bordered hover>
                 <thead>
                 <tr>
