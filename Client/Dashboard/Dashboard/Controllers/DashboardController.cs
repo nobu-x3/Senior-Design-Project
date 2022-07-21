@@ -10,6 +10,8 @@ using System.Diagnostics;
 using System.Text.Json;
 using System.IO;
 using Dashboard;
+using Microsoft.Net.Http.Headers;
+using NuGet.Protocol;
 
 namespace Dashboard.Controllers
 {
@@ -127,6 +129,40 @@ namespace Dashboard.Controllers
             return _context.Students.Any(e => e.ID == id);
         }
 
+        
+        [HttpPost("sessionLoad")]
+        public async Task<IActionResult> LoadSession()
+        {
+            var postedFile = Request.Form.Files[0];
+            var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
+            
+            if (postedFile.Length > 0)
+            {
+                var fileName = ContentDispositionHeaderValue.Parse(postedFile.ContentDisposition).FileName.Trim().ToString();
+                var finalPath = Path.Combine(uploadFolder, fileName);
+                using (var fileStream = new FileStream(finalPath, FileMode.Create))
+                {
+                    await postedFile.CopyToAsync(fileStream);
+                }
+
+                try
+                {
+                    var text = await System.IO.File.ReadAllTextAsync(finalPath);
+                    var res = JsonSerializer.Deserialize<List<Student>>(text);
+                    await _context.AddRangeAsync(res);
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return BadRequest();
+                }
+               
+                
+                return Ok();
+            }
+            return BadRequest();
+        }
         [HttpPost("sessionSave")]
         public async Task<IActionResult> StartSession()
         {
@@ -154,7 +190,9 @@ namespace Dashboard.Controllers
         {
             var options = new JsonSerializerOptions { WriteIndented = true };
             string jsonString = JsonSerializer.Serialize(_context.Students, options);
-            string fileName = $"SaveData_{DateTime.Now}";
+            string fileName = $"SaveData_{DateTime.Now.ToFileTime()}";
+            await System.IO.File.WriteAllTextAsync(fileName, jsonString);
+            System.IO.File.Move(fileName, "ClientApp/public/"+fileName);
             Console.WriteLine(jsonString);
         }
     }

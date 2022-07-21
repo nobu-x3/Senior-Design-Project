@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Button, Table } from 'react-bootstrap';
 import axios from 'axios';
 import LoadingSpinner from './LoadingSpinner';
+import Form from 'react-bootstrap/Form';
 
 
 
@@ -10,6 +11,8 @@ const Dashboard = (props) =>
 {
     const [state, setState] = useState([]);
     const [isLoading, setLoading] = useState(false);
+    const [loadSave, setLoadSave] = useState(false);
+    const [file, setFile] = useState(null);
     const history = useHistory();
     useEffect(() =>
     {
@@ -33,12 +36,35 @@ const Dashboard = (props) =>
         // }, 5000);
         
     }
+    
+    const handleSubmitFile = (event) =>
+    {
+        setLoading(true);
+        const formData = new FormData();
+        formData.append('File', file);
+        axios.post('https://localhost:7113/api/Dashboard/sessionLoad',
+            formData)
+            .then(res =>
+            {
+                setLoading(false);
+            });
+    }
+    
     return(
         <div>
             {isLoading ? <LoadingSpinner /> :
                 <div>
                     <Button variant='primary' onClick={() => history.push('/add-student')}>Add Student</Button>
                     <Button variant='primary' onClick={handleSave}>Save</Button>
+                    {loadSave ? 
+                        <div>
+                            <Form.Group controlId="formFile" className="mb-3" onChange={(e) => setFile(e.target.files[0])}>
+                                <Form.Control type="file" />
+                            </Form.Group>
+                            <Button variant='primary' onClick={handleSubmitFile}>Upload</Button>
+                        </div>
+                        : 
+                        <Button variant='primary' onClick={() => setLoadSave(true)}>Load Save</Button>}
                     <RenderTable state={state}/>
                 </div>
             
