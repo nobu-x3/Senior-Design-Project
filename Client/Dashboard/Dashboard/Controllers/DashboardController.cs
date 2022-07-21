@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Text.Json;
 using System.IO;
+using System.Net;
 using Dashboard;
 using Microsoft.Net.Http.Headers;
 using NuGet.Protocol;
@@ -166,7 +167,7 @@ namespace Dashboard.Controllers
             }
             return BadRequest();
         }
-        [HttpPost("sessionSave")]
+        
         public async Task<IActionResult> StartSession()
         {
             SaveStudents();
@@ -189,14 +190,16 @@ namespace Dashboard.Controllers
             return true;
         }
 
-        private async void SaveStudents()
+        [HttpGet("sessionSave")]
+        public async Task<FileContentResult> SaveStudents()
         {
             var options = new JsonSerializerOptions { WriteIndented = true };
             string jsonString = JsonSerializer.Serialize(_context.Students, options);
             string fileName = $"SaveData_{DateTime.Now.ToFileTime()}";
             await System.IO.File.WriteAllTextAsync(fileName, jsonString);
-            System.IO.File.Move(fileName, "ClientApp/public/"+fileName);
-            Console.WriteLine(jsonString);
+            var bytes = await System.IO.File.ReadAllBytesAsync(fileName);
+            
+            return File(bytes, "application/octet-stream", "SaveData.json");
         }
     }
 }

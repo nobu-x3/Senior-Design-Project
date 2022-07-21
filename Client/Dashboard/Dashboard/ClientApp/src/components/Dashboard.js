@@ -25,11 +25,12 @@ const Dashboard = (props) =>
     const handleSave = () =>
     {
         setLoading(true);
-        axios.post('https://localhost:7113/api/Dashboard/sessionSave')
-            .then(res =>
-            {
-                setLoading(false);
-            });
+        window.open('https://localhost:7113/api/Dashboard/sessionSave', '_blank');
+        // axios.get('https://localhost:7113/api/Dashboard/sessionSave')
+        //     .then(res =>
+        //     {
+        //         setLoading(false);
+        //     });
         // setTimeout(() =>
         // {
         //     setLoading(false);
