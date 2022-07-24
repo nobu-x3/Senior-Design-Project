@@ -168,12 +168,23 @@ namespace Dashboard.Controllers
             }
             return BadRequest();
         }
-        
+
+
+        [HttpGet("startSession")]
         public async Task<IActionResult> StartSession()
         {
-            SaveStudents();
-            // bool finished = await CompileClientExecutables();
-            return NoContent();
+            var psi = new ProcessStartInfo()
+            {
+                FileName = "/bin/bash",
+                Arguments = "-c \" ./start_verification_server.sh \"",
+                RedirectStandardOutput = false,
+                UseShellExecute = true,
+                CreateNoWindow = false
+            };
+
+            var process = Process.Start(psi);
+            await process.WaitForExitAsync();
+            return Ok();
         }
         
         [HttpGet("downloadCompiledExecutables")]
@@ -185,7 +196,7 @@ namespace Dashboard.Controllers
         }
         
         [HttpGet("compileExecutables")]
-        public async Task<bool> CompileClientExecutables()
+        public async Task<IActionResult> CompileClientExecutables()
         {
             var psi = new ProcessStartInfo()
             {
@@ -198,7 +209,7 @@ namespace Dashboard.Controllers
 
             var process = Process.Start(psi);
             await process.WaitForExitAsync();
-            return true;
+            return Ok();
         }
 
         [HttpGet("sessionSave")]

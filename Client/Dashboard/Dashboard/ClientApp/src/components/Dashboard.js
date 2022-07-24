@@ -35,8 +35,7 @@ const Dashboard = (props) =>
         {
             setLoading(false);
             setShowWaitMessage(false);
-            window.open('https://localhost:7113/api/Dashboard/downloadCompiledExecutables', '_blank', 
-                { popup: true });
+            window.open('https://localhost:7113/api/Dashboard/downloadCompiledExecutables', '_blank');
         }, 5000);
         // axios.get('https://localhost:7113/api/Dashboard/compileExecutables')
         //     .then(res =>
@@ -58,6 +57,15 @@ const Dashboard = (props) =>
                 setLoading(false);
             });
     }
+    const handleSessionStart = () =>
+    {
+        setLoading(true)
+        axios.get('https://localhost:7113/api/Dashboard/startSession')
+            .then(res =>
+            {
+               setLoading(false); 
+            });
+    }
     
     return(
         <div>
@@ -73,6 +81,7 @@ const Dashboard = (props) =>
                     <Button variant='primary' onClick={() => history.push('/add-student')}>Add Student</Button>
                     <Button variant='primary' onClick={handleSave}>Save</Button>
                     <Button variant='primary' onClick={handleCompileRequest}>Compile Client Executables</Button>
+                    <Button variant='success' onClick={handleSessionStart}>Start Session</Button>
                     {loadSave ? 
                         <div>
                             <Form.Group controlId="formFile" className="mb-3" onChange={(e) => setFile(e.target.files[0])}>
