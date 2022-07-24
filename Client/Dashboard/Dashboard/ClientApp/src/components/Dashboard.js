@@ -23,7 +23,6 @@ const Dashboard = (props) =>
     useEffect(() =>
     {
         fetchData();
-       
         return () => 
         {
             clearTimeout(tRef.current);
@@ -86,7 +85,7 @@ const Dashboard = (props) =>
         axios.get('https://localhost:7113/api/Dashboard/startSession')
             .then(res =>
             {
-               setLoading(false); 
+                setLoading(false); 
             });
     }
     return(

@@ -1,0 +1,32 @@
+[
+  {
+    "ID": 1,
+    "StudentID": "302155",
+    "FirstName": "Dominik",
+    "LastName": "Kurasbediani",
+    "BaseImage": null,
+    "ImagePath": null,
+    "LastUpdate": "0001-01-01T00:00:00",
+    "Status": false
+  },
+  {
+    "ID": 2,
+    "StudentID": "12345",
+    "FirstName": "Joe",
+    "LastName": "Doe",
+    "BaseImage": null,
+    "ImagePath": null,
+    "LastUpdate": "0001-01-01T00:00:00",
+    "Status": false
+  },
+  {
+    "ID": 3,
+    "StudentID": "09876",
+    "FirstName": "Test",
+    "LastName": "Testini",
+    "BaseImage": null,
+    "ImagePath": "/Users/d0mi/Projects/OpenCV/Senior-Design-Project/Client/Dashboard/Dashboard/UploadedFiles/09876.png",
+    "LastUpdate": "0001-01-01T00:00:00",
+    "Status": false
+  }
+]
