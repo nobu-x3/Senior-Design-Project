@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Table } from 'react-bootstrap';
 import axios from 'axios';
@@ -6,23 +6,45 @@ import LoadingSpinner from './LoadingSpinner';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
 
+
+
 const Dashboard = (props) =>
 {
-    const [state, setState] = useState([]);
+
     const [isLoading, setLoading] = useState(false);
     const [loadSave, setLoadSave] = useState(false);
     const [showWaitMessage, setShowWaitMessage] = useState(false);
     const [file, setFile] = useState(null);
     const history = useHistory();
+    const [timer, setTimer] = useState(0);
+    const [state, setState] = useState([]);
+    const tRef = useRef(timer);
+    tRef.current = timer;
     useEffect(() =>
     {
-        axios.get('https://localhost:7113/api/Dashboard').then(res =>
+        fetchData();
+       
+        return () => 
         {
-            console.log(res);
-            setState(res.data);
-        });
-        return  () => setState([]);
-    }, [state]);
+            clearTimeout(tRef.current);
+            setState([])
+        };
+    }, []);
+    
+    const fetchData = () =>
+    {
+        clearTimeout(tRef.current);
+        const t = setTimeout(() =>
+        {
+            axios.get('https://localhost:7113/api/Dashboard').then(res =>
+            {
+                console.log(res.data);
+                setState(res.data);
+            });
+            fetchData();
+        }, 1000);
+        setTimer(t);
+    }
     const handleSave = () =>
     {
         window.open('https://localhost:7113/api/Dashboard/sessionSave', '_blank');
@@ -67,7 +89,6 @@ const Dashboard = (props) =>
                setLoading(false); 
             });
     }
-    
     return(
         <div>
             {isLoading ?
@@ -111,34 +132,28 @@ const handleDelete = (id) =>
 }
 function RenderTable(props)
 {
-    // let test = 
-    // [
-    //     {
-    //         "id": 1,
-    //         "studentID": "302155",
-    //         "firstName": "Dominik",
-    //         "lastName": "Kurasbediani"
-    //     }
-    // ]
-
     let rows = [];
-    props.state.forEach(student => {
-        const status = student.status.toString()
-        rows.push(
-            <tr>
-                <td>
-                    <Button variant='danger' onClick={() => handleDelete(student.id)}>Delete</Button>
-                </td>
-                <td>{student.id}</td>
-                <td>{student.firstName}</td>
-                <td>{student.lastName}</td>
-                <td>{student.studentID}</td>
-                <td>{status}</td>
-                <td>{student.lastUpdate}</td>
-            </tr>
-        
-        )
-    })
+    if(props.state !== [])
+    {
+        props.state.forEach(student => {
+            const status = student.status.toString()
+            rows.push(
+                <tr>
+                    <td>
+                        <Button variant='danger' onClick={() => handleDelete(student.id)}>Delete</Button>
+                    </td>
+                    <td>{student.id}</td>
+                    <td>{student.firstName}</td>
+                    <td>{student.lastName}</td>
+                    <td>{student.studentID}</td>
+                    <td>{status}</td>
+                    <td>{student.lastUpdate}</td>
+                </tr>
+
+            )
+        })
+    }
+    
     return(
         <div>
             <Table striped bordered hover>
