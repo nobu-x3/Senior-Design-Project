@@ -21,6 +21,7 @@ const Dashboard = (props) =>
             console.log(res);
             setState(res.data);
         });
+        return  () => setState([]);
     }, [state]);
     const handleSave = () =>
     {

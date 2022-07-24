@@ -22,10 +22,12 @@ namespace Dashboard.Controllers
     public class DashboardController : ControllerBase
     {
         private readonly DashboardContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public DashboardController(DashboardContext context)
+        public DashboardController(DashboardContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
         }
 
         // GET: api/Dashboard
@@ -78,14 +80,29 @@ namespace Dashboard.Controllers
         // POST: api/Dashboard
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Student>> PostStudent(Student student)
+        public async Task<ActionResult<Student>> PostStudent([FromForm]Student student)
         {
+            if (student.BaseImage != null)
+            {
+                student.ImagePath = await SaveImage(student.BaseImage, student.StudentID);
+            }
             _context.Students.Add(student);
             await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetStudent", new { id = student.ID }, student);
+            return Ok();
         }
 
+        [NonAction]
+        public async Task<string> SaveImage(IFormFile imageFile, string id)
+        {
+            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "UploadedFiles", id + Path.GetExtension(imageFile.FileName));
+            using(var stream = new FileStream(imagePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(stream);
+            }
+
+            return imagePath;
+        }
+        
         [HttpPost("server/{student.StudentID}")]
         public async Task<ActionResult<Student>> Post(Student student)
         {
