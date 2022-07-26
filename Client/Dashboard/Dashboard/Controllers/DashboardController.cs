@@ -215,7 +215,6 @@ namespace Dashboard.Controllers
             };
 
             var process = Process.Start(psi);
-            await process.WaitForExitAsync();
             return Ok();
         }
 

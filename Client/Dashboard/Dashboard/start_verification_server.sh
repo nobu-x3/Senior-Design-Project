@@ -11,7 +11,8 @@ do
     mv $file "$UPLOADED_FILES_DIR/base.${extension}"
     mv "$UPLOADED_FILES_DIR/base.${extension}" "$SCRIPT_DIR/Server/SESSION/$filename"
 done
-pip install deepface flask
+pip install deepface flask waitress
 cd $SCRIPT_DIR/Server/
-export FLASK_APP=sdp_server
-flask run
+# export FLASK_APP=sdp_server
+# flask run
+python3 sdp_server.py
