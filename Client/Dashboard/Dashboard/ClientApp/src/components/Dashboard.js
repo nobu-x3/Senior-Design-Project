@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, Table } from 'react-bootstrap';
+import {Button, Col, Container, Row, Table} from 'react-bootstrap';
 import axios from 'axios';
 import LoadingSpinner from './LoadingSpinner';
 import Form from 'react-bootstrap/Form';
@@ -85,32 +85,51 @@ const Dashboard = (props) =>
     return(
         <div>
             {isLoading ?
-            <div>
-                {showWaitMessage ? 
-                    <Alert key={'primary'} variant='primary'>This may take up to 2 hours, please do not reload or leave the page, it is not frozen.</Alert>
-                    : null}
-                <LoadingSpinner />
-            </div>    
+                <div>
+                    {showWaitMessage ?
+                        <Alert key={'primary'} variant='primary'>This may take up to 2 hours, please do not reload or
+                            leave the page, it is not frozen.</Alert>
+                        : null}
+                    <LoadingSpinner/>
+                </div>
                 :
                 <div>
-                    <Button variant='primary' onClick={() => history.push('/add-student')}>Add Student</Button>
-                    <Button variant='primary' onClick={handleSave}>Save</Button>
-                    <Button variant='primary' onClick={handleCompileRequest}>Compile Client Executables</Button>
-                    <Button variant='success' onClick={handleSessionStart}>Start Session</Button>
-                    {loadSave ? 
-                        <div>
-                            <Form.Group controlId="formFile" className="mb-3" onChange={(e) => setFile(e.target.files[0])}>
-                                <Form.Control type="file" />
-                            </Form.Group>
-                            <Button variant='primary' onClick={handleSubmitFile}>Upload</Button>
-                        </div>
-                        : 
-                        <Button variant='primary' onClick={() => setLoadSave(true)}>Load Save</Button>}
+                    <Container>
+                        <Row>
+                            <Col md="auto">
+                                <Button variant='primary' onClick={() => history.push('/add-student')}>Add
+                                    Student</Button>
+                            </Col>
+                            <Col md="auto">
+                                <Button variant='primary' onClick={handleSave}>Save</Button>
+                            </Col>
+                            <Col md="auto">
+                                <Button variant='primary' onClick={handleCompileRequest}>Compile Client
+                                    Executables</Button>
+                            </Col>
+                            <Col md="auto">
+                                <Button variant='success' onClick={handleSessionStart}>Start Session</Button>
+                            </Col>
+
+
+                            {loadSave ?
+                                <div>
+                                    <Form.Group controlId="formFile" className="mb-3"
+                                                onChange={(e) => setFile(e.target.files[0])}>
+                                        <Form.Control type="file"/>
+                                    </Form.Group>
+                                    <Button variant='primary' onClick={handleSubmitFile}>Upload</Button>
+                                </div>
+                                :
+                                <Col md="auto">
+                                    <Button variant='primary' onClick={() => setLoadSave(true)}>Load Save</Button>
+                                </Col>
+                            }
+                        </Row>
+                    </Container>
                     <RenderTable state={state}/>
                 </div>
-            
             }
-
         </div>
     )
 }
