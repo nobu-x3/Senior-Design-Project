@@ -1,0 +1,1 @@
+pip install deepface numpy opencv-python

@@ -80,7 +80,7 @@ namespace Dashboard.Controllers
         // POST: api/Dashboard
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Student>> PostStudent([FromForm]Student student)
+        public async Task<ActionResult<Student>> PostStudent([FromForm] Student student)
         {
             if (student.BaseImage != null)
             {
@@ -94,15 +94,15 @@ namespace Dashboard.Controllers
         [NonAction]
         public async Task<string> SaveImage(IFormFile imageFile, string id)
         {
-            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "UploadedFiles", id + Path.GetExtension(imageFile.FileName));
-            using(var stream = new FileStream(imagePath, FileMode.Create))
+            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "UploadedFiles/Images", id + Path.GetExtension(imageFile.FileName));
+            using (var stream = new FileStream(imagePath, FileMode.Create))
             {
                 await imageFile.CopyToAsync(stream);
             }
 
             return imagePath;
         }
-        
+
         [HttpPost("server/{student.StudentID}")]
         public async Task<ActionResult<Student>> Post(Student student)
         {
@@ -148,13 +148,13 @@ namespace Dashboard.Controllers
             return _context.Students.Any(e => e.ID == id);
         }
 
-        
+
         [HttpPost("sessionLoad")]
         public async Task<IActionResult> LoadSession()
         {
             var postedFile = Request.Form.Files[0];
-            var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
-            
+            var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles/Saves");
+
             if (postedFile.Length > 0)
             {
                 var fileName = ContentDispositionHeaderValue.Parse(postedFile.ContentDisposition).FileName.Trim().ToString();
@@ -179,8 +179,8 @@ namespace Dashboard.Controllers
                     Console.WriteLine(e);
                     return BadRequest();
                 }
-               
-                
+
+
                 return Ok();
             }
             return BadRequest();
@@ -190,6 +190,21 @@ namespace Dashboard.Controllers
         [HttpGet("startSession")]
         public async Task<IActionResult> StartSession()
         {
+            string sessionDir = "Server/SESSION";
+            if (Directory.Exists(sessionDir))
+            {
+                var dirs = Directory.GetDirectories(sessionDir);
+                foreach (var dir in dirs)
+                {
+                    Directory.Delete(dir, true);
+                }
+            }
+
+            foreach (var student in _context.Students)
+            {
+                Directory.CreateDirectory(sessionDir + Path.DirectorySeparatorChar + student.StudentID);
+            }
+
             var psi = new ProcessStartInfo()
             {
                 FileName = "/bin/bash",
@@ -200,10 +215,9 @@ namespace Dashboard.Controllers
             };
 
             var process = Process.Start(psi);
-            await process.WaitForExitAsync();
             return Ok();
         }
-        
+
         [HttpGet("downloadCompiledExecutables")]
         public async Task<FileContentResult> DownloadCompiledExecutables()
         {
@@ -211,7 +225,7 @@ namespace Dashboard.Controllers
             var bytes = await System.IO.File.ReadAllBytesAsync(fileName);
             return File(bytes, "application/zip", "Client.zip");
         }
-        
+
         [HttpGet("compileExecutables")]
         public async Task<IActionResult> CompileClientExecutables()
         {
@@ -237,7 +251,7 @@ namespace Dashboard.Controllers
             string fileName = $"SaveData_{DateTime.Now.ToFileTime()}";
             await System.IO.File.WriteAllTextAsync(fileName, jsonString);
             var bytes = await System.IO.File.ReadAllBytesAsync(fileName);
-            
+
             return File(bytes, "application/octet-stream", "SaveData.json");
         }
     }

@@ -10,8 +10,8 @@ from deepface import DeepFace
 
 app = Flask(__name__)
 metrics = ["cosine", "euclidean", "euclidean_l2"]
-curDirAbs = os.path.abspath(os.path.dirname(__file__))
-curDirRel = os.path.relpath(os.path.dirname(__file__))
+curDirAbs = os.path.abspath(os.path.dirname(__file__)) + "/SESSION"
+curDirRel = os.path.relpath(os.path.dirname(__file__)) + "/SESSION"
 @app.route('/', methods=['GET', 'POST'])
 def process_and_verify_face():
     if request.method == 'POST':
@@ -71,3 +71,7 @@ def send_results_to_dashboard(results, studentid):
 
 def baseFileExists(studentid):
     return os.path.isfile('{}/{}/'.format(curDirAbs, studentid) + 'base.jpg')
+
+if __name__ == "__main__":
+    from waitress import serve
+    serve(app, host="127.0.0.1", port=5000)

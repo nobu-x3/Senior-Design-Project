@@ -1,3 +1,3 @@
 #!/bin/bash
 
-pyinstaller --one-file capture.py
+pyinstaller --onefile capture.py

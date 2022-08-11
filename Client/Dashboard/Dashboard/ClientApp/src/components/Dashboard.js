@@ -23,7 +23,6 @@ const Dashboard = (props) =>
     useEffect(() =>
     {
         fetchData();
-       
         return () => 
         {
             clearTimeout(tRef.current);
@@ -52,20 +51,13 @@ const Dashboard = (props) =>
     
     const handleCompileRequest = () =>
     {
-        setLoading(true);
-        setShowWaitMessage(true);
-        setTimeout(() => 
-        {
-            setLoading(false);
-            setShowWaitMessage(false);
-            window.open('https://localhost:7113/api/Dashboard/downloadCompiledExecutables', '_blank');
-        }, 5000);
-        // axios.get('https://localhost:7113/api/Dashboard/compileExecutables')
-        //     .then(res =>
-        //     {
-        //         setLoading(false);
-        //         setShowWaitMessage(false);
-        //     });
+        axios.get('https://localhost:7113/api/Dashboard/compileExecutables')
+            .then(res =>
+            {
+                setLoading(false);
+                setShowWaitMessage(false);
+                window.open('https://localhost:7113/api/Dashboard/downloadCompiledExecutables', '_blank');
+            });
     }
     
     const handleSubmitFile = (event) =>
@@ -78,6 +70,7 @@ const Dashboard = (props) =>
             .then(res =>
             {
                 setLoading(false);
+                setLoadSave(false);
             });
     }
     const handleSessionStart = () =>
@@ -86,7 +79,7 @@ const Dashboard = (props) =>
         axios.get('https://localhost:7113/api/Dashboard/startSession')
             .then(res =>
             {
-               setLoading(false); 
+                setLoading(false); 
             });
     }
     return(
