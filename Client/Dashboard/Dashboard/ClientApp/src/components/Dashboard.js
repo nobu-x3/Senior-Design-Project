@@ -149,6 +149,7 @@ function RenderTable(props)
     {
         props.state.forEach(student => {
             const status = student.status.toString()
+            console.log(student.status);
             rows.push(
                 <tr>
                     <td>
@@ -158,7 +159,7 @@ function RenderTable(props)
                     <td>{student.firstName}</td>
                     <td>{student.lastName}</td>
                     <td>{student.studentID}</td>
-                    <td>{status}</td>
+                    {student.status ? <td style={{backgroundColor : '#00FF00'}}>{status}</td> : <td style={{backgroundColor : '#FF0000'}}>{status}</td>}
                     <td>{student.lastUpdate}</td>
                 </tr>
 
