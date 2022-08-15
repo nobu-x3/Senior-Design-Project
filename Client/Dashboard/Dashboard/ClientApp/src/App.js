@@ -4,6 +4,7 @@ import { Layout } from './components/Layout';
 import './custom.css'
 import Dashboard from './components/Dashboard';
 import AddStudent from "./components/AddStudent";
+import {Redirect} from "react-router-dom";
 
 export default class App extends Component {
   static displayName = App.name;
@@ -11,8 +12,9 @@ export default class App extends Component {
   render () {
     return (
       <Layout>
-        <Route path="/dashboard" component={Dashboard} />
-        <Route path='/add-student' component={AddStudent} />
+          <Route exact path='/' render={() => { return(<Redirect to='/dashboard' />)}} />
+          <Route path="/dashboard" component={Dashboard} />
+          <Route path='/add-student' component={AddStudent} />
       </Layout>
     );
   }
