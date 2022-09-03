@@ -106,7 +106,7 @@ namespace Dashboard.Controllers
         [HttpPost("server/{student.StudentID}")]
         public async Task<ActionResult<Student>> Post(Student student)
         {
-            var _student = _context.Students.FirstOrDefault(student => student.StudentID.Equals(student.StudentID));
+            var _student = await _context.Students.SingleOrDefaultAsync(s => s.StudentID.Equals(student.StudentID));
             if (_student != null)
             {
                 _context.Entry(_student).State = EntityState.Modified;

@@ -5,7 +5,7 @@ import subprocess
 
 procs = []
 for i in range(90):
-    proc = subprocess.Popen([sys.executable, 'capture.py', '{}'.format(i)])
+    proc = subprocess.Popen([sys.executable, 'capture_stress_test.py', '{}'.format(i)])
     procs.append(proc)
 
 for proc in procs:

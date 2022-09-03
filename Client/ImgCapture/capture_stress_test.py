@@ -39,9 +39,9 @@ def send_image(student_id, img, num):
     _, encrimg = cv2.imencode(".jpg", img)
     img_str = encrimg.tostring()
     img_byte = base64.b64encode(img_str).decode("utf-8")
-    img_json = json.dumps({'studentid': student_id, 'image':img_byte, "request_num" : str(num)}).encode("utf-8")
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
     # payload = json.dumps({"image": im_b64, "request_num" : request_num})
+    img_json = json.dumps({'studentid': student_id, 'image':img_byte, "request_num" : str(num)}).encode("utf-8")
     response = requests.post(api, data=img_json, headers=headers)
 
 if __name__ == "__main__":
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     else:
         student_id = sys.argv[1]
     print("Student id: " + student_id)
-    cam = cv2.VideoCapture(0)
+    # cam = cv2.VideoCapture(0)
     cv2.namedWindow("Image Capture")
     face_detector = FaceDetector.build_model('ssd')
     freeze = False
@@ -66,11 +66,12 @@ if __name__ == "__main__":
     tic = time.time()
     request_num = 0
     while True:
-        ret, frame = cam.read()
-        if not ret:
-            print("failed to grab image")
-            break
+        # ret, frame = cam.read()
+        # if not ret:
+        #     print("failed to grab image")
+        #     break
         
+        frame = cv2.imread("D:\Senior-Design-Project\Server\\302155\\base.jpg")
         raw_img = frame.copy()
         if freeze == False:
             try:
@@ -139,5 +140,5 @@ if __name__ == "__main__":
         if k%256 == 27:
             break
     
-    cam.release()
+    # cam.release()
     cv2.destroyAllWindows()

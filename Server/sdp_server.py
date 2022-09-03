@@ -5,16 +5,19 @@ import base64
 import numpy as np
 import cv2
 import os
+import time
 import requests
+import csv
 from deepface import DeepFace
-
 app = Flask(__name__)
 metrics = ["cosine", "euclidean", "euclidean_l2"]
 curDirAbs = os.path.abspath(os.path.dirname(__file__)) + "/SESSION"
 curDirRel = os.path.relpath(os.path.dirname(__file__)) + "/SESSION"
+start_tic = time.time()
 @app.route('/', methods=['GET', 'POST'])
 def process_and_verify_face():
     if request.method == 'POST':
+        tic = time.time()
         data = request.data.decode('utf-8')
         data_json = json.loads(data)
         image = data_json['image']
@@ -36,6 +39,15 @@ def process_and_verify_face():
             send_results_to_dashboard(result, studentid)
         handle_files(studentid)
         
+        toc = time.time()
+        with open("response_time.txt", 'a', encoding='UTF8', newline='') as f:
+            f.write("{}\n".format(toc - tic))
+        
+        if not result["verified"] and int(studentid) % 9 != 0:
+            with open("false_negatives.txt", 'a', encoding='UTF8', newline='') as f:
+                f.write("{}\n".format(1))
+        if start_tic - toc > 300:
+            quit()
         return result
     return "<p>Hello World GET!</p>"
 
@@ -75,4 +87,3 @@ def baseFileExists(studentid):
 if __name__ == "__main__":
     from waitress import serve
     serve(app, host="127.0.0.1", port=5000)
-    print("Server started!")

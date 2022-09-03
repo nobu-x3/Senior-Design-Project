@@ -15,7 +15,7 @@ for i in range(0, 90):
   temp["FirstName"]="test"+"{}".format(i)
   temp["LastName"]="test"+"{}".format(i)
   temp["StudentID"]="{}".format(i)
-  temp["ID"] = i+1
+  temp["ID"] = i+2
   json_array.append(temp)
 
 with open("SaveData", "w") as write:
