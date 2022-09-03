@@ -92,9 +92,9 @@ namespace Dashboard.Controllers
         }
 
         [NonAction]
-        public async Task<string> SaveImage(IFormFile imageFile, string id)
+        private async Task<string> SaveImage(IFormFile imageFile, string id)
         {
-            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "UploadedFiles/Images", id + Path.GetExtension(imageFile.FileName));
+            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "UploadedFiles" + Path.DirectorySeparatorChar + "Images", id + Path.GetExtension(imageFile.FileName));
             using (var stream = new FileStream(imagePath, FileMode.Create))
             {
                 await imageFile.CopyToAsync(stream);

@@ -7,6 +7,7 @@ import json
 import requests
 from tkinter import *
 from tkinter import ttk
+import sys
 
 
 class Form:
@@ -51,8 +52,12 @@ def send_image(student_id, img, num):
 if __name__ == "__main__":
     api = "http://127.0.0.1:5000"
     
-    form = Form()
-    student_id = form.student_id
+    student_id = 0
+    if len(sys.argv) < 2:
+        form = Form()
+        student_id = form.student_id
+    else:
+        student_id = sys.argv[1]
     print("Student id: " + student_id)
     cam = cv2.VideoCapture(0)
     cv2.namedWindow("Image Capture")
